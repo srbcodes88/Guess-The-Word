@@ -1,11 +1,13 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QLabel, QFormLayout, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from database import login_user
 from register import RegisterWindow
 from player import PlayerWindow
 from admin import AdminWindow
 
 class LoginWindow(QWidget):
+    registration_done = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Login")
@@ -37,5 +39,7 @@ class LoginWindow(QWidget):
             QMessageBox.warning(self, "Login failed", "Wrong username or password.")
 
     def open_register(self):
+        self.hide()
         self.reg = RegisterWindow()
         self.reg.show()
+        self.reg.destroyed.connect(self.show)
