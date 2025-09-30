@@ -45,16 +45,25 @@ def init_db():
     conn.close()
 
 def register_user(username, password, role):
-    conn = sqlite3.connect(DB_FILE)
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
     try:
-        conn.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+        # Check if username already exists
+        cur.execute('SELECT 1 FROM users WHERE username=?', (username,))
+        if cur.fetchone():
+            return False  # Username exists
+
+        # Insert user if not exists
+        cur.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
                     (username, password, role))
-        conn.commit()
+        con.commit()
         return True
-    except sqlite3.IntegrityError:
+    except Exception as e:
+        print(f"Error in register_user: {e}")  # For debugging
         return False
     finally:
-        conn.close()
+        con.close()
+
 
 def login_user(username, password):
     conn = sqlite3.connect(DB_FILE)
