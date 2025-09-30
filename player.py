@@ -72,20 +72,13 @@ class PlayerWindow(QWidget):
         self.game_active = True
 
     def show_guesses(self):
-        while self.guesses_layout.count():
-            item = self.guesses_layout.takeAt(0)
-            widget = item.widget()
-            if widget is not None:
-                widget.setParent(None)
-            else:
-                child_layout = item.layout()
-                if child_layout is not None:
-                    while child_layout.count():
-                        child_item = child_layout.takeAt(0)
-                        child_widget = child_item.widget()
-                        if child_widget is not None:
-                            child_widget.setParent(None)
-
+        existing_guess_count = self.guesses_layout.count()
+        for guess_index in range(existing_guess_count, len(self.previous_guesses)):
+            guess, res = self.previous_guesses[guess_index]
+            hbox = QHBoxLayout()
+            for i in range(5):
+                hbox.addWidget(GuessLabel(guess[i], res[i]))
+            self.guesses_layout.addLayout(hbox)
 
     def make_guess(self):
         if not self.game_active:
