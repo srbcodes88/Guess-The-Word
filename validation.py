@@ -12,4 +12,3 @@ def validate_user(username, password):
     if not any(c in SPECIALS for c in password):
         return False, f"Password must contain at least one special character from {''.join(SPECIALS)}"
     return True, "Valid"
-
