@@ -100,6 +100,10 @@ class PlayerWindow(QWidget):
             self.close()
             return
         if self.guess_count == 5:
-            QMessageBox.information(self, "Game Over", "Better luck next time!")
+            QMessageBox.information(
+                self, 
+                "Game Over", 
+                f"Better luck next time! The correct word was: {self.target}"
+            )
             self.game_active = False
             self.close()
