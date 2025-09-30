@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QFormLayout, QMessageBox, QComboBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QFormLayout, QMessageBox
 from validation import validate_user
 from database import register_user
+
 
 class RegisterWindow(QWidget):
     def __init__(self):
@@ -10,12 +11,9 @@ class RegisterWindow(QWidget):
         self.username = QLineEdit()
         self.password = QLineEdit()
         self.password.setEchoMode(QLineEdit.Password)
-        self.role = QComboBox()
-        self.role.addItems(["player", "admin"])
         self.btn_register = QPushButton("Register")
         self.layout.addRow("Username:", self.username)
         self.layout.addRow("Password:", self.password)
-        self.layout.addRow("Role:", self.role)
         self.layout.addRow(self.btn_register)
         self.setLayout(self.layout)
         self.btn_register.clicked.connect(self.try_register)
@@ -23,8 +21,8 @@ class RegisterWindow(QWidget):
     def try_register(self):
         uname = self.username.text()
         pwd = self.password.text()
-        role = self.role.currentText()
-        if validate_user(uname, pwd) and register_user(uname, pwd, role):
+        # No role input, default to "player"
+        if validate_user(uname, pwd) and register_user(uname, pwd, "player"):
             QMessageBox.information(self, "Success", "User registered!")
             self.close()
         else:
