@@ -94,7 +94,7 @@ def log_guess(username, target_word, guessed_word, guess_num, win):
     today = str(date.today())
     conn = sqlite3.connect(DB_FILE)
     conn.execute('''
-        INSERT INTO guesses (username, game_date, target_word, guess_num, guessed_word, win)
+        INSERT INTO guesses (username, game_date, target_word, guess_num, guessed_word, is_correct)
         VALUES (?, ?, ?, ?, ?, ?)
     ''', (username, today, target_word, guess_num, guessed_word, int(win)))
     conn.commit()
