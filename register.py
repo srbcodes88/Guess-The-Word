@@ -21,11 +21,16 @@ class RegisterWindow(QWidget):
     def try_register(self):
         uname = self.username.text()
         pwd = self.password.text()
-        # No role input, default to "player"
-        if validate_user(uname, pwd) and register_user(uname, pwd, "player"):
-            QMessageBox.information(self, "Success", "User registered!")
-            self.close()
+        valid, message = validate_user(uname, pwd)
+        if valid:
+            if register_user(uname, pwd, "player"):
+                QMessageBox.information(self, "Success", "User registered!")
+                self.close()
+            else:
+                QMessageBox.warning(self, "Failed", "Username already taken.")
+                self.username.clear()
+                self.password.clear()
         else:
-            QMessageBox.warning(self, "Failed", "Invalid details or username already taken.")
-            self.username.clear()
+            QMessageBox.warning(self, "Failed", message)
             self.password.clear()
+
