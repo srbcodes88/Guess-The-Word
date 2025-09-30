@@ -32,11 +32,13 @@ class LoginWindow(QWidget):
         if role:
             self.close()
             if role == "admin":
-                AdminWindow(uname).show()
+                self.new_window = AdminWindow(uname)
             else:
-                PlayerWindow(uname).show()
+                self.new_window = PlayerWindow(uname)
+            self.new_window.show()
         else:
             QMessageBox.warning(self, "Login failed", "Wrong username or password.")
+
 
     def open_register(self):
         self.hide()
