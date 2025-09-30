@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from database import init_db
-from gui_login import LoginWindow
+from login import LoginWindow
 
 if __name__ == '__main__':
     init_db()

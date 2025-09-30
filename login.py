@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QLabel, QFormLayout, QMessageBox
 from PyQt5.QtCore import Qt
 from database import login_user
-from gui_register import RegisterWindow
-from gui_player import PlayerWindow
-from gui_admin import AdminWindow
+from register import RegisterWindow
+from player import PlayerWindow
+from admin import AdminWindow
 
 class LoginWindow(QWidget):
     def __init__(self):
