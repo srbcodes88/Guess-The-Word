@@ -139,6 +139,20 @@ class PlayerWindow(QWidget):
     def clear_guesses_display(self):
         while self.guesses_layout.count():
             child = self.guesses_layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+            if child is not None:
+                if child.widget():
+                    child.widget().deleteLater()
+                elif child.layout():
+                    self.clear_layout(child.layout())
         self.previous_guesses = []
+
+    @staticmethod
+    def clear_layout(layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+            elif item.layout():
+                PlayerWindow.clear_layout(item.layout())
+
+
