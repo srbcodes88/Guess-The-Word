@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, QMessageBox, QLabel
+from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, QMessageBox, QLabel, QDialog
 from PyQt5.QtCore import Qt
 from database import get_daily_guess_count, get_random_word, log_guess
 from PyQt5.QtGui import QColor
@@ -68,8 +68,9 @@ class PlayerWindow(QWidget):
         self.guess_count = 0
         self.target = get_random_word()
         self.previous_guesses = []
-        self.guesses_layout = QVBoxLayout()
+        self.clear_guesses_display()
         self.game_active = True
+
 
     def show_guesses(self):
         existing_guess_count = self.guesses_layout.count()
@@ -79,6 +80,38 @@ class PlayerWindow(QWidget):
             for i in range(5):
                 hbox.addWidget(GuessLabel(guess[i], res[i]))
             self.guesses_layout.addLayout(hbox)
+
+    def show_endgame_dialog(self, title, message):
+        dialog = QDialog(self)
+        dialog.setWindowTitle(title)
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel(message))
+
+        buttons = QHBoxLayout()
+        btn_new_game = QPushButton("New Game")
+        btn_exit = QPushButton("Exit")
+        buttons.addWidget(btn_new_game)
+        buttons.addWidget(btn_exit)
+        layout.addLayout(buttons)
+        dialog.setLayout(layout)
+
+        if get_daily_guess_count(self.username) >= 3:
+            btn_new_game.setEnabled(False)
+
+        def start_new_game():
+            dialog.accept()
+            self.new_game()
+            self.clear_guesses_display()
+            self.game_active = True
+
+        def exit_game():
+            dialog.accept()
+            self.close()
+
+        btn_new_game.clicked.connect(start_new_game)
+        btn_exit.clicked.connect(exit_game)
+        dialog.exec_()
+
 
     def make_guess(self):
         if not self.game_active:
@@ -95,15 +128,17 @@ class PlayerWindow(QWidget):
         self.show_guesses()
         self.input_line.clear()
         if win:
-            QMessageBox.information(self, "You Win!", "Congratulations!")
             self.game_active = False
-            self.close()
+            self.show_endgame_dialog("You Win!", "Congratulations!")
             return
         if self.guess_count == 5:
-            QMessageBox.information(
-                self, 
-                "Game Over", 
-                f"Better luck next time! The correct word was: {self.target}"
-            )
             self.game_active = False
-            self.close()
+            self.show_endgame_dialog("Game Over", f"Better luck next time! The correct word was: {self.target}")
+            return
+
+    def clear_guesses_display(self):
+        while self.guesses_layout.count():
+            child = self.guesses_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+        self.previous_guesses = []
