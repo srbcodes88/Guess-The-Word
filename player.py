@@ -35,10 +35,32 @@ def result_colors(word, guess):
                 result[i] = 'x'
     return result
 
+def open_player_window(username):
+    # Check daily guess limit before creating window
+    if get_daily_guess_count(username) >= 3:
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("Limit reached")
+        msg_box.setText("Already played 3 games today.")
+        exit_button = msg_box.addButton("Exit", QMessageBox.AcceptRole)
+        msg_box.setDefaultButton(exit_button)
+        msg_box.setEscapeButton(exit_button)
+        msg_box.setStandardButtons(QMessageBox.NoButton)
+        msg_box.exec_()
+        if msg_box.clickedButton() == exit_button:
+            from login import LoginWindow
+            login_window = LoginWindow()
+            login_window.show()
+        return None  # Do not create PlayerWindow
+
+    player_window = PlayerWindow(username)
+    player_window.show()
+    return player_window
+
 class PlayerWindow(QWidget):
     def __init__(self, username):
         super().__init__()
         self.setWindowTitle(f"Player: {username}")
+        self.hide()
         self.username = username
         self.layout = QVBoxLayout()
         self.guesses_layout = QVBoxLayout()
@@ -51,18 +73,22 @@ class PlayerWindow(QWidget):
         self.previous_guesses = []
         self.game_active = False
 
-        if get_daily_guess_count(username) >= 3:
+        '''if get_daily_guess_count(username) >= 3:
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Limit reached")
             msg_box.setText("Already played 3 games today.")
             exit_button = msg_box.addButton("Exit", QMessageBox.AcceptRole)
             msg_box.setDefaultButton(exit_button)
             msg_box.setEscapeButton(exit_button)
-            msg_box.setStandardButtons(QMessageBox.NoButton)  # Remove default buttons
+            msg_box.setStandardButtons(QMessageBox.NoButton)
             msg_box.exec_()
+            if msg_box.clickedButton() == exit_button:
+                from login import LoginWindow
+                self.login_window = LoginWindow()
+                self.login_window.show()
             self.close()
             return
-
+        self.show()'''
 
         self.new_game()
 
