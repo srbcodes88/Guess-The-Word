@@ -2,18 +2,21 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QLabel, QFormLayout
 from PyQt5.QtCore import Qt, pyqtSignal
 from database import login_user
 from register import RegisterWindow
-from player import PlayerWindow
 from admin import AdminWindow
 
 class LoginWindow(QWidget):
     registration_done = pyqtSignal()
 
+    def clear_inputs(self):
+        self.username.clear()
+        self.password.clear()
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Login")
         self.layout = QFormLayout()
-        self.username = QLineEdit()
-        self.password = QLineEdit()
+        self.username = QLineEdit("")
+        self.password = QLineEdit("")
         self.password.setEchoMode(QLineEdit.Password)
         self.btn_login = QPushButton("Login")
         self.btn_register = QPushButton("Register")
@@ -30,15 +33,18 @@ class LoginWindow(QWidget):
         pwd = self.password.text()
         role = login_user(uname, pwd)
         if role:
-            self.close()
             if role == "admin":
+                self.close()
                 self.new_window = AdminWindow(uname)
+                self.new_window.show()
             else:
                 from player import open_player_window
-        
+                new_win = open_player_window(uname)
+                if new_win is not None:
+                    self.close()
+                    self.new_window = new_win
         else:
             QMessageBox.warning(self, "Login failed", "Wrong username or password.")
-
 
     def open_register(self):
         self.hide()

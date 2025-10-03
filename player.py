@@ -36,7 +36,6 @@ def result_colors(word, guess):
     return result
 
 def open_player_window(username):
-    # Check daily guess limit before creating window
     if get_daily_guess_count(username) >= 3:
         msg_box = QMessageBox()
         msg_box.setWindowTitle("Limit reached")
@@ -49,8 +48,9 @@ def open_player_window(username):
         if msg_box.clickedButton() == exit_button:
             from login import LoginWindow
             login_window = LoginWindow()
+            login_window.clear_inputs()
             login_window.show()
-        return None  # Do not create PlayerWindow
+        return None
 
     player_window = PlayerWindow(username)
     player_window.show()
@@ -60,7 +60,6 @@ class PlayerWindow(QWidget):
     def __init__(self, username):
         super().__init__()
         self.setWindowTitle(f"Player: {username}")
-        self.hide()
         self.username = username
         self.layout = QVBoxLayout()
         self.guesses_layout = QVBoxLayout()
@@ -87,8 +86,7 @@ class PlayerWindow(QWidget):
                 self.login_window = LoginWindow()
                 self.login_window.show()
             self.close()
-            return
-        self.show()'''
+            return'''
 
         self.new_game()
 
