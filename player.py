@@ -95,10 +95,10 @@ class PlayerWindow(QWidget):
         layout.addLayout(buttons)
         dialog.setLayout(layout)
 
-        if get_daily_guess_count(self.username) >= 3:
-            btn_new_game.setEnabled(False)
-
         def start_new_game():
+            if get_daily_guess_count(self.username) >= 3:
+                self.show_limit_popup()
+                return
             dialog.accept()
             self.new_game()
             self.clear_guesses_display()
@@ -111,6 +111,7 @@ class PlayerWindow(QWidget):
         btn_new_game.clicked.connect(start_new_game)
         btn_exit.clicked.connect(exit_game)
         dialog.exec_()
+
 
 
     def make_guess(self):
