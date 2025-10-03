@@ -109,9 +109,9 @@ def admin_daily_report(report_date):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     cur.execute('''
-        SELECT COUNT(DISTINCT username), SUM(is_correct)
-        FROM guesses WHERE game_date=?
-        AND guess_num=(SELECT MIN(guess_num) FROM guesses g2 WHERE g2.username=guesses.username AND g2.target_word=guesses.target_word)
+        SELECT COUNT(DISTINCT username || ':' || target_word) 
+        FROM guesses 
+        WHERE game_date = ? AND is_correct = 1
     ''', (report_date,))
     res = cur.fetchone()
     conn.close()
