@@ -25,7 +25,10 @@ class RegisterWindow(QWidget):
         if valid:
             if register_user(uname, pwd, "player"):
                 QMessageBox.information(self, "Success", "User registered!")
+                from login import LoginWindow
                 self.close()
+                self.login_window = LoginWindow()
+                self.login_window.show()
             else:
                 QMessageBox.warning(self, "Failed", "Username already taken.")
                 self.username.clear()
