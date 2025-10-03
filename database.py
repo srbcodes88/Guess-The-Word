@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import date
 
-DB_FILE="word_bank.db"
+DB_FILE="game_database.db"
 WORD_TABLE=[
     "ADOPT", "BLAZE", "CATCH", "DOUSE", "EPOXY", "FROCK", "GRAND", "HITCH", "ICHOR", "JOWAR", "KELPS", "LACED", "MIRTH", "NOVEL", "ORBIT", "PLANT", "QUERY", "ROVER", "SHEAR", "TROVE"
 ]
@@ -109,7 +109,7 @@ def admin_daily_report(report_date):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     cur.execute('''
-        SELECT COUNT(DISTINCT username), SUM(win)
+        SELECT COUNT(DISTINCT username), SUM(is_correct)
         FROM guesses WHERE game_date=?
         AND guess_num=(SELECT MIN(guess_num) FROM guesses g2 WHERE g2.username=guesses.username AND g2.target_word=guesses.target_word)
     ''', (report_date,))
@@ -123,7 +123,7 @@ def admin_user_report(username):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     cur.execute('''
-        SELECT game_date, COUNT(DISTINCT target_word), SUM(win)
+        SELECT game_date, COUNT(DISTINCT target_word), SUM(is_correct)
         FROM guesses
         WHERE username=?
         GROUP BY game_date
