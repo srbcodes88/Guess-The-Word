@@ -41,6 +41,11 @@ def init_db():
     if cur.fetchone()[0] == 0:
         for w in WORD_TABLE:
             cur.execute('INSERT INTO words(word) VALUES (?)', (w,))
+
+    cur.execute('SELECT 1 FROM users WHERE username=?', ('Admin123',))
+    if not cur.fetchone():
+        cur.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+                    ('Admin123', 'Admin1!2@3', 'admin'))
     conn.commit()
     conn.close()
 
