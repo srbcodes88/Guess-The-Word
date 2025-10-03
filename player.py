@@ -52,9 +52,17 @@ class PlayerWindow(QWidget):
         self.game_active = False
 
         if get_daily_guess_count(username) >= 3:
-            QMessageBox.information(self,"Limit reached","Already played 3 games today.")
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Limit reached")
+            msg_box.setText("Already played 3 games today.")
+            exit_button = msg_box.addButton("Exit", QMessageBox.AcceptRole)
+            msg_box.setDefaultButton(exit_button)
+            msg_box.setEscapeButton(exit_button)
+            msg_box.setStandardButtons(QMessageBox.NoButton)  # Remove default buttons
+            msg_box.exec_()
             self.close()
             return
+
 
         self.new_game()
 
