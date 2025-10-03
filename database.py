@@ -108,15 +108,17 @@ def log_guess(username, target_word, guessed_word, guess_num, win):
 def admin_daily_report(report_date):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
+    
+    cur.execute('SELECT COUNT(DISTINCT username) FROM guesses WHERE game_date=?', (report_date,))
+    num_users = cur.fetchone()[0]
     cur.execute('''
-        SELECT COUNT(DISTINCT username || ':' || target_word) 
-        FROM guesses 
-        WHERE game_date = ? AND is_correct = 1
+        SELECT COUNT(DISTINCT username || '-' || target_word)
+        FROM guesses
+        WHERE game_date=? AND is_correct=1
     ''', (report_date,))
-    res = cur.fetchone()
+    num_wins = cur.fetchone()[0] or 0
+    
     conn.close()
-    num_users = res[0] if res else 0
-    num_wins = res[1] if res and res[1] is not None else 0
     return num_users, num_wins
 
 def admin_user_report(username):
